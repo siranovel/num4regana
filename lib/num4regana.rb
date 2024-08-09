@@ -3,7 +3,7 @@ require 'num4regana.jar'
 require 'commons-math3-3.6.1.jar'
 
 java_import 'SmplRegAna'
-java_import 'OLSMultRegAna'
+java_import 'MultRegAna'
 # 回帰分析
 #  (Apache commoms math3使用)
 module Num4RegAnaLib
@@ -67,10 +67,10 @@ module Num4RegAnaLib
             return @regana.getR(yi.to_java(Java::double), xi.to_java(Java::double))
         end
     end
-    # 重回帰分析(最小２乗法)
+    # 重回帰分析(最小２乗法:等分散性checkあり)
     class OLSMultRegAnaLib
         def initialize
-            @regana = OLSMultRegAna.getInstance()
+            @multana = MultRegAna.getInstance()
         end
         # 重回帰分析
         #
@@ -100,10 +100,11 @@ module Num4RegAnaLib
         #        "slope":      [3.47, 0.53],     # 回帰係数
         #     }
         def line_reg_ana(yi, xij)
-            ret = @regana.lineRegAna(yi.to_java(Java::double), xij.to_java(Java::double[]))
+            multRet = @multana.lineRegAna(yi.to_java(Java::double), xij.to_java(Java::double[]))
+
             retRb = {
-                "intercept":  ret.getIntercept(), # 定数項
-                "slope":      ret.getSlope().to_a,     # 回帰係数
+                "intercept":  multRet.getIntercept(), # 定数項
+                "slope":      multRet.getSlope().to_a,     # 回帰係数
             }
             return retRb
         end
@@ -131,7 +132,7 @@ module Num4RegAnaLib
         #   regana.getr2(yi, xi)
         #   => 0.858
         def getr2(yi, xij)
-            return @regana.getR2(yi.to_java(Java::double), xij.to_java(Java::double[]))
+            return @multana.getR2(yi.to_java(Java::double), xij.to_java(Java::double[]))
         end
         # 自由度調整済み決定係数
         #
@@ -157,7 +158,7 @@ module Num4RegAnaLib
         #   regana.getadjr2(yi, xij)
         #   => 0.8176
         def getadjr2(yi, xij)
-            return @regana.getAdjR2(yi.to_java(Java::double), xij.to_java(Java::double[]))
+            return @multana.getAdjR2(yi.to_java(Java::double), xij.to_java(Java::double[]))
         end
 
     end
