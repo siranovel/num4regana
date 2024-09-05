@@ -12,22 +12,30 @@ public class MultRegAna {
         return regana;
     }
     public LineReg lineRegAna(double[] yi, double xij[][]) {
-        double[][] data = createData(yi, xij);
-        LineRegAna line = createLineRegAna(data);
+        LineRegAna line = createLineRegAna(yi, xij);
 
         return line.lineRegAna(yi, xij);
     }
     public double getR2(double[] yi, double xij[][]) {
-        double[][] data = createData(yi, xij);
-        LineRegAna line = createLineRegAna(data);
+        LineRegAna line = createLineRegAna(yi, xij);
 
         return line.getR2(yi, xij);
     }
     public double getAdjR2(double[] yi, double xij[][]) {
-        double[][] data = createData(yi, xij);
-        LineRegAna line = createLineRegAna(data);
+        LineRegAna line = createLineRegAna(yi, xij);
 
         return line.getAdjR2(yi, xij);
+    }
+    private LineRegAna createLineRegAna(double[] yi, double xij[][]) {
+        double[][] data = createData(yi, xij);
+
+        // 等分散性の検定
+        if (false == bartletTest(data)) {  // 等分散性
+            return new OLSMultRegAna();
+        }
+        else {                             // 
+            return new GLSMultRegAna(data);
+        }
     }
     private double[][] createData(double[] yi, double xij[][]) {
         double[][] data = new double[yi.length][1 + xij[0].length];
@@ -37,15 +45,6 @@ public class MultRegAna {
             System.arraycopy(xij[i], 0, data[i], 1, xij[0].length);
         }
         return data;
-    }
-    private LineRegAna createLineRegAna(double data[][]) {
-        // 等分散性の検定
-        if (false == bartletTest(data)) {  // 等分散性
-            return new OLSMultRegAna();
-        }
-        else {                             // 
-            return new GLSMultRegAna(data);
-        }
     }
     private boolean bartletTest(double data[][]) {
         OneWayAnovaTest anova = new BartletTest();

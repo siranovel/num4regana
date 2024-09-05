@@ -1,5 +1,6 @@
+require 'spec_helper'
 require 'num4regana'
-require_relative('mymatcher')
+
 
 RSpec.describe Num4RegAnaLib do
     describe Num4RegAnaLib::SmplRegAnaLib do
@@ -93,4 +94,6 @@ RSpec.describe Num4RegAnaLib do
 
     end
 end
+
+
 

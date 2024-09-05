@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name          = 'num4regana'
-  s.version       = '0.0.2'
-  s.date          = '2024-08-08'
+  s.version       = '0.0.3'
+  s.date          = '2024-09-05'
   s.summary       = "num for regression analysis"
   s.description   = "numerical solution for regression analysis."
   s.platform      = 'java'
