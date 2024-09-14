@@ -1,9 +1,8 @@
 num4regana
 ==========
-回帰分析
+数値計算による回帰分析を行う
 
 ## decscription ##
-
 
 ## Demo ##
 
@@ -14,7 +13,7 @@ ruby rake-compilerライブラリ
 
 ## Usage ##
 
-sample/samplez.rbファイルを参照
+sample/spec内の各ファイル参照
 
 ## install ##
 

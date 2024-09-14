@@ -1,12 +1,45 @@
-public class PoissonRegAna {
+import java.util.Arrays;
+import java.util.Map;
+
+public class PoissonRegAna extends AbstratGLM {
+    private final int NUM = 1000;
     private static PoissonRegAna regana = new PoissonRegAna();
     public static PoissonRegAna getInstance() {
         return regana;
     }
     public LineReg nonLineRegAna(double[] yi, double[][] xij) {
-        NonLineRegAna line = new NonLineRegAna();
+        double[] b = initB(xij[0].length);
 
-        return line.nonLineRegAna(yi, xij);
+        for  (int i = 0; i < NUM; i++) {
+            b = grand_metod(yi, b, xij);
+        }
+        return new LineReg(b);
+    }
+    public double getAIC(Map<String, Object> regCoe, double[][] xij) {
+        double[] b = new double[1 + xij[0].length];
+
+        b[0] = (double)regCoe.get("intercept");
+        System.arraycopy(regCoe.get("slope"), 0, b, 1, xij[0].length);
+        return calcAIC(b, xij);
+    }
+    private double[] initB(int xsie) {
+        double[] b = new double[1 + xsie];
+         
+        Arrays.fill(b, 0.0);
+        return b;
+    }
+    // q = b0 + b1 * x0
+    double regression(double[] b, double[] xi) {
+        double ret = 0.0;
+
+        for(int i = 0; i < xi.length; i++) {
+            ret += b[i] * xi[i];
+        }
+        return ret;
+    }
+    // p = exp(q)
+    double linkFunc(double q) {
+        return Math.exp(q);
     }
     /*********************************/
     /* interface define              */
@@ -28,53 +61,6 @@ public class PoissonRegAna {
             return a;
         }
         public double[] getSlope() {
-            return b;
-        }
-    }
-    private class NonLineRegAna {
-        private final double eta = 0.005;
-        private final int num = 1000;
-        public LineReg nonLineRegAna(double[] yi, double[][] xij) {
-            double[] b = new double[1 + xij[0].length];
-            
-            for(int i = 0; i < b.length; i++) {
-                b[i] = 0.0;
-            }
-            for  (int i = 0; i < num; i++) {
-                b = grand_metod(yi, b, xij);
-            }
-
-            return new LineReg(b);
-        }
-        // q = b0 + b1 * x0
-        private double rereion(double[] b, double[] xi) {
-            double ret = b[0];
-
-            for(int i = 0; i < xi.length; i++) {
-                ret += b[i + 1] * xi[i];
-            }
-            return ret;
-        }
-        private double linkFunc(double q) {
-            return Math.exp(q);
-        }
-        private double[] grand_metod(double[] yi, double[] b, double[][] xij) {
-            double e0 = 0.0;
-            double[] en = new double[xij[0].length];
-
-            for(int i = 0; i < yi.length; i++) {
-                double q = rereion(b, xij[i]);
-                double p = linkFunc(q);
-
-                e0 += (yi[i] - p);
-                for(int j = 0; j < en.length; j++) {                
-                    en[j] += (yi[i] - p) * xij[i][j];
-                }
-            }
-            b[0] += eta * e0;
-            for(int j = 0; j < en.length; j++) {
-                b[1 + j] += eta * en[j];
-            }
             return b;
         }
     }

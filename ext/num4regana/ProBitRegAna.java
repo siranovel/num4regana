@@ -1,13 +1,16 @@
 import java.util.Arrays;
+import org.apache.commons.math3.distribution.NormalDistribution;
 import java.util.Map;
 
-public class LogitRegAna extends AbstratGLM {
+public class ProBitRegAna extends AbstratGLM {
     private final int NUM = 1000;
-    private static LogitRegAna regana = new LogitRegAna();
-    public static LogitRegAna getInstance() {
+    private static ProBitRegAna regana = new ProBitRegAna();
+    private NormalDistribution ndist = new NormalDistribution(0, 1);
+    
+    public static ProBitRegAna getInstance() {
         return regana;
     }
-    public LineReg nonLineRegAna(double[] yi, double xij[][]) {
+    public LineReg nonLineRegAna(double[] yi, double[][] xij) {
         double[] b = initB(xij[0].length);
          
         for  (int i = 0; i < NUM; i++) {
@@ -37,9 +40,9 @@ public class LogitRegAna extends AbstratGLM {
         }
         return ret;
     }
-    // p = 1 / (1 + exp( -q))
+    // 
     double linkFunc(double q) {
-        return 1.0 / (1.0 + Math.exp(-1.0 * q));
+        return ndist.cumulativeProbability(q);
     }
     /*********************************/
     /* interface define              */
