@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [0.0.4] - 2024-09-13
+
+### add
+- add function of getAIC
+
 ## [0.0.3] - 2024-09-05
 
 ### add
