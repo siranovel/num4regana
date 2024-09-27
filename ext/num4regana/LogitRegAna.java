@@ -1,7 +1,7 @@
 import java.util.Arrays;
 import java.util.Map;
 
-public class LogitRegAna extends AbstratGLM {
+public class LogitRegAna extends AbstractGLM {
     private final int NUM = 1000;
     private static LogitRegAna regana = new LogitRegAna();
     public static LogitRegAna getInstance() {

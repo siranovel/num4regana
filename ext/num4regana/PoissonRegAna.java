@@ -1,7 +1,7 @@
 import java.util.Arrays;
 import java.util.Map;
 
-public class PoissonRegAna extends AbstratGLM {
+public class PoissonRegAna extends AbstractGLM {
     private final int NUM = 1000;
     private static PoissonRegAna regana = new PoissonRegAna();
     public static PoissonRegAna getInstance() {

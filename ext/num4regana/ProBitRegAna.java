@@ -2,7 +2,7 @@ import java.util.Arrays;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import java.util.Map;
 
-public class ProBitRegAna extends AbstratGLM {
+public class ProBitRegAna extends AbstractGLM {
     private final int NUM = 1000;
     private static ProBitRegAna regana = new ProBitRegAna();
     private NormalDistribution ndist = new NormalDistribution(0, 1);
