@@ -114,7 +114,6 @@ RSpec.describe Num4RegAnaLib do
             expect(
                 regana.get_aic(reg, xij)
             ).to my_round(-12.856, 3)
-
         end
     end
     describe Num4RegAnaLib::ProBitRegAnaLib do

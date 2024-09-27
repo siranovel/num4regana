@@ -1,6 +1,6 @@
 import java.util.Arrays;
 
-abstract class AbstratGLM {
+abstract class AbstractGLM {
     private final double eta = 0.005;
     abstract double regression(double[] b, double[] xi);
     abstract double linkFunc(double q);
@@ -18,15 +18,15 @@ abstract class AbstratGLM {
     // AIC
     protected double calcAIC(double[] b, double[][] xij) {
         // 尤度計算
-        double maxL = calcL(b,xij); 
+        double maxL = calcLogL(b,xij); 
         int k = 1 + xij[0].length;
 
         return -2 * (maxL - k);
     }
     // 交差エントロピー計算
     private double[] calcE(double[] yi, double[] b, double[][] xij) {
-        double[] xi = new double[1 + xij[0].length];
-        double[] ei = new double[1 + xij[0].length];
+        double[] xi = new double[b.length];
+        double[] ei = new double[b.length];
 
         Arrays.fill(ei, 0.0);
         for(int i = 0; i < yi.length; i++) {
@@ -43,14 +43,15 @@ abstract class AbstratGLM {
 
         return ei;
     }
-    // 尤度計算(パラメータ)
-    private double calcL(double[] b, double[][] xij) {
+    // 対数尤度計算(パラメータ)
+    private double calcLogL(double[] b, double[][] xij) {
         double l = 0.0;
-        double[] xi = new double[1 + xij[0].length];
+        double[] xi = new double[b.length];
 
         for(int i = 0; i < xij.length; i++) {
             xi[0] = 1.0;
             System.arraycopy(xij[i], 0, xi, 1, xij[0].length);
+
             double q = regression(b, xi);
             double p = linkFunc(q);
 

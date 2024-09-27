@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [0.0.5] - 2024-09-27
+
+### add
+- add Bayesian models
+- add Hierarchical Bayesian models
+
 ## [0.0.4] - 2024-09-13
 
 ### add
