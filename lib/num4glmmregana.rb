@@ -71,7 +71,7 @@ module Num4GLMMRegAnaLib
         # @overload get_bic(regcoe, xij)
         #   @param [Hash] regcoe 回帰係数(intercept:定数項 slope:回帰係数)
         #   @param [Array] xij xの値(double[][])
-        #   @return double AIC値
+        #   @return double BIC値
         # @example
         #   reg = {
         #        :intercept=>  -6.2313,    # 定数項
@@ -154,7 +154,7 @@ module Num4GLMMRegAnaLib
         # @overload get_bic(regcoe, xij)
         #   @param [Hash] regcoe 回帰係数(intercept:定数項 slope:回帰係数)
         #   @param [Array] xij xの値(double[][])
-        #   @return double AIC値
+        #   @return double BIC値
         # @example
         #   reg = {
         #        :intercept=>0.4341885635221602, # 定数項

@@ -4,6 +4,7 @@ require 'commons-math3-3.6.1.jar'
 
 java_import 'PoissonHierBayesRegAna'
 # 階層ベイズモデル
+#  (Apache commoms math3使用)
 module Num4HBMRegAnaLib
     # 階層ベイズポアソン回帰分析
     class PoissonHierBayesRegAnaLib
