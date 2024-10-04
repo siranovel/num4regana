@@ -10,28 +10,17 @@ abstract class AbstractGLMM {
     // （メトロポリス法,ギブスサンプリング）
     protected double[] mcmcGS(double[] yi, double[] b, double[][] xij) {
         BetaDistribution beDist = new BetaDistribution(50, 50);
-        BetaDistribution beDist2 = new BetaDistribution(1, 1);  // 確率用
         double[] newB = new double[b.length];
-        double oldL = 0.0;
-        double newL = 0.0;
 
         for(int i = 0; i < b.length; i++) {
             newB = Arrays.copyOf(b, b.length);
-            oldL = calcLx(b,xij);
             newB[i] = beDist.sample();
-            newL = calcLx(newB,xij);
 
-            double r = newL / oldL;
-            if (r > 1.0) {
-                b[i] = newB[i];
-            }
-            else {
-                double r2 = beDist2.sample();
-
-                if (r2 < (1.0 - r)) {
-                    b[i] = newB[i];
-                }
-            }            
+            b[i] = mcmcSample(
+                calcLx(b,xij),         // oldL
+                calcLx(newB,xij),      // newL
+                new double[] {b[i], newB[i]} // bTbl: [0]=> oldB, [1]=> newB
+            );
         }
         return b;
     }
@@ -47,16 +36,94 @@ abstract class AbstractGLMM {
     // EMアルゴリズム
     protected double[] mcmcEM(double[] yi, double[] b, double[][] xij) {
         double[] newB = new double[b.length];
-
-        double[] bE = calcEStep(yi, b);
+        double[][] bE = calcEStep(yi, b, xij);
         double[] bM = calcMStep(yi, bE, xij);
 
         for(int i = 0; i < newB.length; i++) {
-            newB[i] = b[i] + bM[i];
+            newB[i] = bM[i];  
         }
         return newB;
     }
+    /*********************************/
+    /* interface define              */
+    /*********************************/
+    /*********************************/
+    /* class define                  */
+    /*********************************/
+    private static class ArraysFillEx {
+        public static void fill(Object array, Object value) {
+            // 第一引数が配列か判定
+            Class<?> type = array.getClass();
+            if (!type.isArray()) {
+                throw new IllegalArgumentException("not array");
+            }
+
+            // クラスの型を判定
+            String arrayClassName = array.getClass().getSimpleName()
+                    .replace("[]", "")
+                    .toLowerCase();
+            String valueClassName = value.getClass().getSimpleName()
+                    .toLowerCase()
+                    .replace("character", "char")
+                    .replace("integer", "int");
+            if (!arrayClassName.equals(valueClassName)) {
+                throw new IllegalArgumentException("does not matc");
+            }
+
+            // 処理
+            if (type.getComponentType().isArray()) {
+                for(Object o: (Object[])array) {
+                    fill(o, value);
+                }
+            }
+            else if (array instanceof boolean[]) {
+                Arrays.fill((boolean[])array, (boolean)value);
+            }
+            else if (array instanceof char[]) {
+                Arrays.fill((char[])array, (char)value);
+            }
+            else if (array instanceof byte[]) {
+                Arrays.fill((byte[])array, (byte)value);
+            }
+            else if (array instanceof short[]) {
+                Arrays.fill((short[])array, (short)value);
+            }
+            else if (array instanceof int[]) {
+                Arrays.fill((int[])array, (int)value);
+            }
+            else if (array instanceof long[]) {
+                Arrays.fill((long[])array, (long)value);
+            }
+            else if (array instanceof float[]) {
+                Arrays.fill((float[])array, (float)value);
+            }
+            else if (array instanceof double[]) {
+                Arrays.fill((double[])array, (double)value);
+            }
+            else {
+                Arrays.fill((Object[])array, value);
+            }
+        }
+    }
     /* ------------------------------------------------------------------ */
+    private double mcmcSample(double oldL, double newL, double[] bTbl) {
+        double r = newL / oldL;
+        BetaDistribution beDist2 = new BetaDistribution(1, 1);  // 確率用
+        double b;
+
+        b = bTbl[0];
+        if (r > 1.0) {
+            b = bTbl[1];
+        }
+        else {
+            double r2 = beDist2.sample();
+
+            if (r2 < (1.0 - r)) {
+                b = bTbl[1];
+            }
+        }            
+        return b;
+    }
     // 尤度計算(パラメータ)
     private double calcLx(double[] b, double[][] xij) {
         double l = 1.0;
@@ -65,10 +132,11 @@ abstract class AbstractGLMM {
         for(int i = 0; i < xij.length; i++) {
             xi[0] = 1.0;
             System.arraycopy(xij[i], 0, xi, 1, xij[0].length);
-            double q = regression(b, xi, nDist.sample());
-            double p = linkFunc(q);
+            double q = linkFunc(
+                regression(b, xi, nDist.sample())
+            );
 
-            l *= p;
+            l *= q;
         }
         return l;
     }   
@@ -80,46 +148,51 @@ abstract class AbstractGLMM {
         for(int i = 0; i < xij.length; i++) {
             xi[0] = 1.0;
             System.arraycopy(xij[i], 0, xi, 1, xij[0].length);
-            double q = regression(b, xi, nDist.sample());
-            double p = linkFunc(q);
+            double q = linkFunc(
+                regression(b, xi, nDist.sample())
+            );
 
-            l += Math.log(p);
+            l += Math.log(q);
         }
         return l;
     }
     // E-Step
-    //  (自己エントロピー)
-    private double[] calcEStep(double[] yi, double[] b) {
-        double[] bh = new double[b.length];
+    //  (Expetation:自己エントロピー)
+    private double[][] calcEStep(double[] yi, double[] b, double[][] xij) {
+        double[][] bh = new double[yi.length][b.length];
+        double[] xi = new double[b.length];
 
-        Arrays.fill(bh, 0.0);
-        for(int j = 0; j < b.length; j++) {
-            for(int i = 0; i < yi.length; i++) {
-                double p = linkFunc(yi[i]);
+        ArraysFillEx.fill(bh, 0.0);
+        for(int i = 0; i < yi.length; i++) {
+            xi[0] = 1.0;
+            System.arraycopy(xij[i], 0, xi, 1, xij[i].length);
+            double p = yi[i];
+            double q = linkFunc(regression(b, xi, nDist.sample()));
 
-                bh[j] += p * Math.log(p);
+            for(int j = 0; j < b.length; j++) {
+                bh[i][j] = 
+                    Math.log(p * xi[j]) - q * (Math.log(q) - Math.log(p * xi[j]));
             }
-            bh[j] *= -1;
         }
         return bh;
     }
     // M-Step
-    //  (KLダイバージェンス)
-    private double[] calcMStep(double[] yi, double[] b, double[][] xij) {
-        double[] xi = new double[b.length];
-        double[] ei = new double[b.length];
+    //  (Maximiation:KLダイバージェンス)
+    private double[] calcMStep(double[] yi, double[][] q, double[][] xij) {
+        double[] xi = new double[1 + xij[0].length];
+        double[] ei = new double[1 + xij[0].length];
 
         Arrays.fill(ei, 0.0);
-        for(int j = 0; j < b.length; j++) {
+        for(int j = 0; j < xi.length; j++) {
             for(int i = 0; i < xij.length; i++) {
                 xi[0] = 1.0;
                 System.arraycopy(xij[i], 0, xi, 1, xij[0].length);
 
-                double q = linkFunc(yi[i]);
-                double p = linkFunc(regression(b, xi, 0));
+                double p = yi[i];
 
-                ei[j] += q * (Math.log(q) - Math.log(p)) * xi[j];
-            }   
+                ei[j] += q[i][j] * (Math.log(p * xi[j]) - Math.log(q[i][j]));
+            }
+            ei[j] = -1 * ei[j];
         }
         return ei;
     }   

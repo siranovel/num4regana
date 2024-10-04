@@ -12,28 +12,24 @@ public class PoissonHierBayesRegAna extends AbstractGLMM {
         double[] b = initB(xij[0].length);
 
         for  (int i = 0; i < NUM; i++) {
-            b = mcmcGS(yi, b, xij);
+            b = mcmcEM(yi, b, xij);
         }
         return new LineReg(b);
     }
     private double[] initB(int xsie) {
         double[] b = new double[1 + xsie];
-        BetaDistribution beDist = new BetaDistribution(50, 50);
 
-        for(int i = 0; i < b.length; i++) {
-            b[i] = beDist.sample();
-        }
+        Arrays.fill(b, 0.0);
         return b;
     }
-    // q = b0 + b1 * x0 + r
-    // (ランダム切片モデル)
+    // q = b0 + b1 * x0
     double regression(double[] b, double[] xi, double r) {
         double ret = 0.0;
 
         for(int i = 0; i < xi.length; i++) {
             ret += b[i] * xi[i];
         }
-        return ret + r;
+        return ret;
     }
     // p = exp(q)
     double linkFunc(double q) {

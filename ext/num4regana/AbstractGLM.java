@@ -32,9 +32,7 @@ abstract class AbstractGLM {
         for(int i = 0; i < yi.length; i++) {
             xi[0] = 1.0;
             System.arraycopy(xij[i], 0, xi, 1, xij[0].length);
-
-            double q = regression(b, xi);
-            double p = linkFunc(q);
+            double p = linkFunc(regression(b, xi));
 
             for(int j = 0; j < xi.length; j++) {                
                 ei[j] += (p - yi[i]) * xi[j];
@@ -52,12 +50,11 @@ abstract class AbstractGLM {
             xi[0] = 1.0;
             System.arraycopy(xij[i], 0, xi, 1, xij[0].length);
 
-            double q = regression(b, xi);
-            double p = linkFunc(q);
+            double p = linkFunc(regression(b, xi));
 
             l += Math.log(p);
         }
         return l;
-    }   
+    }
 }
 
