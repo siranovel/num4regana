@@ -13,10 +13,12 @@ RSpec.describe Num4RegAnaLib do
                 [4],
             ]
             res = {
-                "intercept":  0.4774,    # 定数項
-                "slope":      [0.5385],  # 回帰係数
+                "intercept":  -11.7452,    # 定数項
+                "slope":      [-23.6337],  # 回帰係数
             }
-            regana.non_line_reg_ana(yi, xij)
+            expect(
+                regana.non_line_reg_ana(yi, xij)
+            ).to linereg(res, 4)
         end
     end
 end

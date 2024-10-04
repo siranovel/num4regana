@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [0.0.6] - 2024-10-04
+
+### chg
+- chg  Hierarchical Bayesian models at EM algorithm
+
 ## [0.0.5] - 2024-09-27
 
 ### add
