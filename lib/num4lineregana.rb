@@ -56,7 +56,7 @@ module Num4LineRegAnaLib
         # @overload getr(yi, xi)
         #   @param [Array] yi yの値(double[])
         #   @param [Array] xi xの値(double[])
-        #   @return [double] 決定係数
+        #   @return [double] 相関係数
         # @example
         #   yi = [286, 851, 589, 389, 158, 1037, 463, 563, 372, 1020]
         #   xi = [107, 336, 233,  82,  61,  378, 129, 313, 142,  428]
@@ -129,7 +129,7 @@ module Num4LineRegAnaLib
         #       [19.5, 40],
         #   ]
         #   regana = Num4RegAnaLib::OLSMultRegAnaLib.new
-        #   regana.getr2(yi, xi)
+        #   regana.getr2(olsyi, olsxij)
         #   => 0.858
         def getr2(yi, xij)
             return @multana.getR2(yi.to_java(Java::double), xij.to_java(Java::double[]))
@@ -139,7 +139,7 @@ module Num4LineRegAnaLib
         # @overload getadjr2(yi, xij)
         #   @param [Array] yi yの値(double[])
         #   @param [Array] xij xの値(double[][])
-        #   @return [double] 決定係数
+        #   @return [double] 自由度調整済み決定係数
         # @example
         #   olsyi = [45, 38, 41, 34, 59, 47, 35, 43, 54, 52]
         #   olsxij = [
@@ -155,10 +155,35 @@ module Num4LineRegAnaLib
         #       [19.5, 40],
         #   ]
         #   regana = Num4RegAnaLib::OLSMultRegAnaLib.new
-        #   regana.getadjr2(yi, xij)
+        #   regana.getadjr2(olsyi, olsxij)
         #   => 0.8176
         def getadjr2(yi, xij)
             return @multana.getAdjR2(yi.to_java(Java::double), xij.to_java(Java::double[]))
+        end
+        # VIF
+        #
+        # @overload getvif(xij)
+        #   @param [Array] xij xの値(double[][])
+        #   @return [double] VIF
+        # @example
+        #   olsxij = [
+        #       [17.5, 30],
+        #       [17.0, 25],
+        #       [18.5, 20],
+        #       [16.0, 30],
+        #       [19.0, 45],
+        #       [19.5, 35],
+        #       [16.0, 25],
+        #       [18.0, 35],
+        #       [19.0, 35],
+        #       [19.5, 40],
+        #   ]
+        #   regana = Num4RegAnaLib::OLSMultRegAnaLib.new
+        #   regana.getvif(olsxij)
+        #   => [1.5101, 1.5101]
+        def getvif(xij)
+            multRet = @multana.getVIF(xij.to_java(Java::double[]))
+            return multRet.to_a
         end
     end
 end

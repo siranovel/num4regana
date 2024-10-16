@@ -26,6 +26,18 @@ public class MultRegAna {
 
         return line.getAdjR2(yi, xij);
     }
+    public double[] getVIF(double xij[][]) {
+        VIF vifDt = new  VIF(xij);
+        double[] retVif = new double[xij[0].length];
+
+        for(int i = 0; i < retVif.length; i++) {
+            vifDt.divDt(i);
+            LineRegAna line = createLineRegAna(vifDt.getVifYi(), vifDt.getVifXi());
+
+            retVif[i] = line.getVIF(vifDt.getVifYi(), vifDt.getVifXi());
+        }
+        return retVif;
+    }
     private LineRegAna createLineRegAna(double[] yi, double xij[][]) {
         double[][] data = createData(yi, xij);
 
@@ -62,6 +74,12 @@ public class MultRegAna {
         double getR2(double[] yi, double xij[][]);
         // 自由度調整済み決定係数
         double getAdjR2(double[] yi, double xij[][]);
+        // VIF
+        default double getVIF(double[] yi, double xij[][]) {
+            double r2 = getR2(yi, xij);
+
+            return 1.0 / (1.0 - r2);
+        }
     }
     private interface OneWayAnovaTest {
         double calcTestStatistic(double[][] xi);
@@ -70,6 +88,33 @@ public class MultRegAna {
     /*********************************/
     /* class define                  */
     /*********************************/
+    private class VIF {
+        private double xij[][] = null;
+        private double[] vifYi = null;
+        private double[][] vifXi = null;
+        public VIF(double xij[][]) {
+            this.xij = xij;
+            this.vifYi = new double[xij.length];
+            this.vifXi = new double[xij.length][xij[0].length - 1];
+        }
+        public void divDt(int i) {
+            for(int n = 0; n < vifYi.length; n++) {
+                vifYi[n] = xij[n][i];
+            }
+            for(int n = 0; n < xij.length; n++){
+                int j = 0;
+
+                for(int m = 0; m < xij[0].length; m++) {
+                    if (m != i) { 
+                        vifXi[n][j] = xij[n][m];
+                        j++; 
+                    }
+                }
+            }
+        }
+        public double[] getVifYi() { return vifYi; }
+        public double[][] getVifXi() { return vifXi;}
+    }
     public class LineReg {
         private double a   = 0.0;
         private double[] b = null;
