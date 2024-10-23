@@ -16,4 +16,3 @@ client = tweepy.Client(
 
 # ツィートする
 client.create_tweet(text=tweet)
-
