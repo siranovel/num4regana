@@ -1,10 +1,10 @@
 import java.util.Map;
 import java.util.Arrays;
 import org.apache.commons.math3.distribution.BetaDistribution;
+import org.apache.commons.math3.distribution.BinomialDistribution;
 
 public class LogitBayesRegAna extends AbstractGLMM {
     private final int NUM = 1000;
-    private final int TIM = 3;
     private static LogitBayesRegAna regana = new LogitBayesRegAna();
     public static LogitBayesRegAna getInstance() {
         return regana;
@@ -16,7 +16,7 @@ public class LogitBayesRegAna extends AbstractGLMM {
             b = mcmcGS(yi, b, xij);
         }
 
-        return new LineReg(b);
+        return new BinLneReg(b);
     }
     public double getBIC(Map<String, Object> regCoe, double[][] xij) {
         double[] b = new double[1 + xij[0].length];
@@ -34,26 +34,14 @@ public class LogitBayesRegAna extends AbstractGLMM {
         }
         return b;
     }
-    private double[] calcMeanBy(double[] yi, double[] b) {
-        double[] meanB = new double[b.length];
-
-        Arrays.fill(meanB, 0.0);
-        for(int i = 0; i < meanB.length; i++) {
-            for(int j = 0; j < yi.length; j++) {
-                meanB[i] += yi[j] * b[i];
-            }
-        }
-        return meanB;
-    }
-    // q = b0 + b1 * x0 + r
-    // (ランダム切片モデル)
+    // q = b0 + b1 * x0
     double regression(double[] b, double[] xi, double r) {
         double ret = 0.0;
 
         for(int i = 0; i < xi.length; i++) {
             ret += b[i] * xi[i];
         }
-        return ret + r;
+        return ret;
     }
     // p = 1 / (1 + exp( -q))
     double linkFunc(double q) {
@@ -65,10 +53,23 @@ public class LogitBayesRegAna extends AbstractGLMM {
     /*********************************/
     /* class define                  */
     /*********************************/
+    public class BinLneReg extends LineReg {
+        private double[] pb = null;        
+        public BinLneReg(double[] b) {
+            pb = new double[b.length];
+
+            for(int i = 0; i < b.length; i++) {
+                BinomialDistribution dist = new BinomialDistribution(1, b[i]);
+
+                pb[i] = dist.getNumericalMean();
+            }
+            super.setB(pb);
+        }
+    }
     public class LineReg {
         private double a   = 0.0;
         private double[] b = null;
-        public LineReg(double[] b) {
+        protected void setB(double[] b) {
             this.a = b[0];
             this.b = new double[b.length - 1];
             for (int i = 0; i < this.b.length; i++) {

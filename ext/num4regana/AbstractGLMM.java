@@ -109,16 +109,13 @@ abstract class AbstractGLMM {
     private double mcmcSample(double oldL, double newL, double[] bTbl) {
         double r = newL / oldL;
         BetaDistribution beDist2 = new BetaDistribution(1, 1);  // 確率用
-        double b;
+        double b = bTbl[0];
 
-        b = bTbl[0];
         if (r > 1.0) {
             b = bTbl[1];
         }
         else {
-            double r2 = beDist2.sample();
-
-            if (r2 < (1.0 - r)) {
+            if ((1.0 - r) > beDist2.sample()) {
                 b = bTbl[1];
             }
         }            
