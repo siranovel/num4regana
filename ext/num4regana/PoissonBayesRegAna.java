@@ -1,6 +1,7 @@
 import java.util.Arrays;
 import java.util.Map;
 import org.apache.commons.math3.distribution.BetaDistribution;
+import org.apache.commons.math3.distribution.PoissonDistribution;
 
 public class PoissonBayesRegAna extends AbstractGLMM {
     private final int NUM = 1000;
@@ -15,7 +16,7 @@ public class PoissonBayesRegAna extends AbstractGLMM {
         for  (int i = 0; i < NUM; i++) {
             b = mcmcGS(yi, b, xij);
         }
-        return new LineReg(b);
+        return new PoissonLineReg(b);
     }
     public double getBIC(Map<String, Object> regCoe, double[][] xij) {
         double[] b = new double[1 + xij[0].length];
@@ -33,15 +34,14 @@ public class PoissonBayesRegAna extends AbstractGLMM {
         }
         return b;
     }
-    // q = b0 + b1 * x0 + r
-    // (ランダム切片モデル)
+    // q = b0 + b1 * x0
     double regression(double[] b, double[] xi, double r) {
         double ret = 0.0;
 
         for(int i = 0; i < xi.length; i++) {
             ret += b[i] * xi[i];
         }
-        return ret + r;
+        return ret;
     }
     // p = exp(q)
     double linkFunc(double q) {
@@ -53,10 +53,23 @@ public class PoissonBayesRegAna extends AbstractGLMM {
     /*********************************/
     /* class define                  */
     /*********************************/
+    public class PoissonLineReg extends LineReg {
+        private double[] pb = null;        
+        public PoissonLineReg(double[] b) {
+            pb = new double[b.length];
+
+            for(int i = 0; i < b.length; i++) {
+                PoissonDistribution dist = new PoissonDistribution(b[i]);
+
+                pb[i] = dist.getNumericalMean();
+            }
+            super.setB(pb);
+        }
+    }
     public class LineReg {
         private double a   = 0.0;
         private double[] b = null;
-        public LineReg(double[] b) {
+        protected void setB(double[] b) {
             this.a = b[0];
             this.b = new double[b.length - 1];
             for (int i = 0; i < this.b.length; i++) {
