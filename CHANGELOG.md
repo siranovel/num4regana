@@ -2,11 +2,16 @@
 
 ## Unreleased
 
+## [0.0.8] - 2024-11-01
+
+### add
+- add function of getAIC in OLSMultRegAnaLib
+
 ## [0.0.7] - 2024-10-09
 
 ### add
 - add function of getVIF
-- 
+
 ## [0.0.6] - 2024-10-04
 
 ### chg
