@@ -2,6 +2,7 @@ import java.util.Map;
 import java.util.Arrays;
 import org.apache.commons.math3.distribution.BetaDistribution;
 import org.apache.commons.math3.distribution.BinomialDistribution;
+import java.util.function.Function;
 
 public class LogitBayesRegAna extends AbstractGLMM {
     private final int NUM = 1000;
@@ -54,14 +55,16 @@ public class LogitBayesRegAna extends AbstractGLMM {
     /* class define                  */
     /*********************************/
     public class BinLneReg extends LineReg {
-        private double[] pb = null;        
+        private double[] pb = null;
         public BinLneReg(double[] b) {
+            int i = 0;
             pb = new double[b.length];
 
-            for(int i = 0; i < b.length; i++) {
-                BinomialDistribution dist = new BinomialDistribution(1, b[i]);
+            for(double e : b) {
+                BinomialDistribution dist = new BinomialDistribution(1, e);
 
                 pb[i] = dist.getNumericalMean();
+                i++;
             }
             super.setB(pb);
         }
