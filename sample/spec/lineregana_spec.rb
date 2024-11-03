@@ -109,6 +109,24 @@ RSpec.describe Num4RegAnaLib do
                 regana.getvif(olsxij)
             ).to is_rounds(res, 4)
         end
+        it '#getaic' do
+            olsyi = [45, 38, 41, 34, 59, 47, 35, 43, 54, 52]
+            olsxij = [
+                [17.5, 30],
+                [17.0, 25],
+                [18.5, 20],
+                [16.0, 30],
+                [19.0, 45],
+                [19.5, 35],
+                [16.0, 25],
+                [18.0, 35],
+                [19.0, 35],
+                [19.5, 40],
+            ]
+            expect(
+                regana.getaic(olsyi, olsxij)
+            ).to my_round(58.113, 3)
+        end
     end
 end
 
