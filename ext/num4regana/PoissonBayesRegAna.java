@@ -57,11 +57,13 @@ public class PoissonBayesRegAna extends AbstractGLMM {
         private double[] pb = null;        
         public PoissonLineReg(double[] b) {
             pb = new double[b.length];
+            int i = 0;
 
-            for(int i = 0; i < b.length; i++) {
+            for(double e : b) {
                 PoissonDistribution dist = new PoissonDistribution(b[i]);
 
                 pb[i] = dist.getNumericalMean();
+                i++;
             }
             super.setB(pb);
         }

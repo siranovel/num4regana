@@ -38,6 +38,12 @@ public class MultRegAna {
         }
         return retVif;
     }
+    public double getAIC(double[] yi, double xij[][]) {
+        LineRegAna line = createLineRegAna(yi, xij);
+
+        return line.getAIC(yi, xij);
+    }
+
     private LineRegAna createLineRegAna(double[] yi, double xij[][]) {
         double[][] data = createData(yi, xij);
 
@@ -80,6 +86,8 @@ public class MultRegAna {
 
             return 1.0 / (1.0 - r2);
         }
+        // AIC
+        double getAIC(double[] yi, double xij[][]);
     }
     private interface OneWayAnovaTest {
         double calcTestStatistic(double[][] xi);
@@ -184,10 +192,7 @@ public class MultRegAna {
 
     // 最小２乗法
     private class OLSMultRegAna implements LineRegAna {
-        private OLSMultipleLinearRegression regression = null;
-        public OLSMultRegAna() {
-            regression = new OLSMultipleLinearRegression();
-        }
+        private OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
         public LineReg lineRegAna(double[] yi, double xij[][]) {
             regression.newSampleData(yi, xij);
 
@@ -205,14 +210,22 @@ public class MultRegAna {
             regression.newSampleData(yi, xij);
             return regression.calculateAdjustedRSquared();
         }
+        // AIC
+        public double getAIC(double[] yi, double xij[][]) {
+            int n = yi.length;
+            int p = xij[0].length;
+            regression.newSampleData(yi, xij);
+            double se = regression.calculateResidualSumOfSquares();
+
+            return n * (Math.log(2 * Math.PI * se / n) + 1) + 2 * (p + 2);
+        }
         
     }
     // 一般化最小２乗法
     private class GLSMultRegAna implements LineRegAna {
-        private GLSMultipleLinearRegression regression = null;
+        private GLSMultipleLinearRegression regression = new GLSMultipleLinearRegression();
         private double[][] data = null;
         public GLSMultRegAna(double data[][]) {
-            regression = new GLSMultipleLinearRegression();
             this.data = data;
         }
         public LineReg lineRegAna(double[] yi, double xij[][]) {
@@ -243,6 +256,10 @@ public class MultRegAna {
                 }
             }
             return omega;
+        }
+        // AIC
+        public double getAIC(double[] yi, double xij[][]) {
+            return 0.0;
         }
     }
             
