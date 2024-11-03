@@ -185,6 +185,32 @@ module Num4LineRegAnaLib
             multRet = @multana.getVIF(xij.to_java(Java::double[]))
             return multRet.to_a
         end
+        # AIC
+        #
+        # @overload getaic(yi, xij)
+        #   @param [Array] yi yの値(double[])
+        #   @param [Array] xij xの値(double[][])
+        #   @return [double] AIC
+        # @example
+        #   olsyi = [45, 38, 41, 34, 59, 47, 35, 43, 54, 52]
+        #   olsxij = [
+        #       [17.5, 30],
+        #       [17.0, 25],
+        #       [18.5, 20],
+        #       [16.0, 30],
+        #       [19.0, 45],
+        #       [19.5, 35],
+        #       [16.0, 25],
+        #       [18.0, 35],
+        #       [19.0, 35],
+        #       [19.5, 40],
+        #   ]
+        #   regana = Num4RegAnaLib::OLSMultRegAnaLib.new
+        #   regana.getaic(olsyi, olsxij)
+        #   => 58.113
+        def getaic(yi, xij)
+            return @multana.getAIC(yi.to_java(Java::double), xij.to_java(Java::double[]))
+        end
     end
 end
 
