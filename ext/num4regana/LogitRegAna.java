@@ -7,13 +7,13 @@ public class LogitRegAna extends AbstractGLM {
     public static LogitRegAna getInstance() {
         return regana;
     }
-    public LineReg nonLineRegAna(double[] yi, double xij[][]) {
+    public MultLineReg nonLineRegAna(double[] yi, double xij[][]) {
         double[] b = initB(xij[0].length);
          
         for  (int i = 0; i < NUM; i++) {
             b = grand_metod(yi, b, xij);
         }
-        return new LineReg(b);
+        return new MultLineReg(b);
     }
     public double getAIC(Map<String, Object> regCoe, double[][] xij) {
         double[] b = new double[1 + xij[0].length];
@@ -47,22 +47,5 @@ public class LogitRegAna extends AbstractGLM {
     /*********************************/
     /* class define                  */
     /*********************************/
-    public class LineReg {
-        private double a   = 0.0;
-        private double[] b = null;
-        public LineReg(double[] b) {
-            this.a = b[0];
-            this.b = new double[b.length - 1];
-            for (int i = 0; i < this.b.length; i++) {
-                this.b[i] = b[i + 1];
-            }
-        }
-        public double getIntercept() {
-            return a;
-        }
-        public double[] getSlope() {
-            return b;
-        }
-    }
 }
 

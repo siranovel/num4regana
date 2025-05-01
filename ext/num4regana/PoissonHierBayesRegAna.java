@@ -8,13 +8,13 @@ public class PoissonHierBayesRegAna extends AbstractGLMM {
     public static PoissonHierBayesRegAna getInstance() {
         return regana;
     }
-    public LineReg nonLineRegAna(double[] yi, double xij[][]) {
+    public MultLineReg nonLineRegAna(double[] yi, double xij[][]) {
         double[] b = initB(xij[0].length);
 
         for  (int i = 0; i < NUM; i++) {
             b = mcmcEM(yi, b, xij);
         }
-        return new LineReg(b);
+        return new MultLineReg(b);
     }
     private double[] initB(int xsie) {
         double[] b = new double[1 + xsie];
@@ -42,21 +42,4 @@ public class PoissonHierBayesRegAna extends AbstractGLMM {
     /*********************************/
     /* class define                  */
     /*********************************/
-    public class LineReg {
-        private double a   = 0.0;
-        private double[] b = null;
-        public LineReg(double[] b) {
-            this.a = b[0];
-            this.b = new double[b.length - 1];
-            for (int i = 0; i < this.b.length; i++) {
-                this.b[i] = b[i + 1];
-            }
-        }
-        public double getIntercept() {
-            return a;
-        }
-        public double[] getSlope() {
-            return b;
-        }
-    }
 }

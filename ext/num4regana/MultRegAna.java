@@ -11,7 +11,7 @@ public class MultRegAna {
     public static MultRegAna getInstance() {
         return regana;
     }
-    public LineReg lineRegAna(double[] yi, double xij[][]) {
+    public MultLineReg lineRegAna(double[] yi, double xij[][]) {
         LineRegAna line = createLineRegAna(yi, xij);
 
         return line.lineRegAna(yi, xij);
@@ -75,7 +75,7 @@ public class MultRegAna {
     /*********************************/
     private interface LineRegAna {
         // 最小２乗法
-        LineReg lineRegAna(double[] yi, double xij[][]);
+        MultLineReg lineRegAna(double[] yi, double xij[][]);
         // 決定係数取得
         double getR2(double[] yi, double xij[][]);
         // 自由度調整済み決定係数
@@ -106,14 +106,14 @@ public class MultRegAna {
             this.vifXi = new double[xij.length][xij[0].length - 1];
         }
         public void divDt(int i) {
-            for(int n = 0; n < vifYi.length; n++) {
-                vifYi[n] = xij[n][i];
-            }
             for(int n = 0; n < xij.length; n++){
                 int j = 0;
 
-                for(int m = 0; m < xij[0].length; m++) {
-                    if (m != i) { 
+                for(int m = 0; m < xij[n].length; m++) {
+                    if (m == i) { 
+                        vifYi[n] = xij[n][i];
+                    }
+                    else { 
                         vifXi[n][j] = xij[n][m];
                         j++; 
                     }
@@ -122,23 +122,6 @@ public class MultRegAna {
         }
         public double[] getVifYi() { return vifYi; }
         public double[][] getVifXi() { return vifXi;}
-    }
-    public class LineReg {
-        private double a   = 0.0;
-        private double[] b = null;
-        public LineReg(double[] b) {
-            this.a = b[0];
-            this.b = new double[b.length - 1];
-            for (int i = 0; i < this.b.length; i++) {
-                this.b[i] = b[i + 1];
-            }
-        }
-        public double getIntercept() {
-            return a;
-        }
-        public double[] getSlope() {
-            return b;
-        }
     }
     // 等分散性検定
     private class BartletTest implements OneWayAnovaTest {
@@ -154,7 +137,7 @@ public class MultRegAna {
             DescriptiveStatistics stat = new DescriptiveStatistics();
             double nisi2 = 0.0;    // (Ni - 1)*si^2の合計
             double nilogsi2 = 0.0; // (Ni - 1)*log(si^2)の合計
-            int sumN = 0;
+            long sumN = 0;
 
             for(int i = 0; i < n; i++) {
                 Arrays.stream(xi[i]).forEach(stat::addValue);
@@ -169,7 +152,7 @@ public class MultRegAna {
         }
         private double calcB(double ln2L, double[][] xi) {
             double invSumN = 0.0;
-            int sumN = 0;
+            long sumN = 0;
             DescriptiveStatistics stat = new DescriptiveStatistics();
 
             for(int i = 0; i < n; i++) {
@@ -193,12 +176,12 @@ public class MultRegAna {
     // 最小２乗法
     private class OLSMultRegAna implements LineRegAna {
         private OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
-        public LineReg lineRegAna(double[] yi, double xij[][]) {
+        public MultLineReg lineRegAna(double[] yi, double xij[][]) {
             regression.newSampleData(yi, xij);
 
             double[] beta = regression.estimateRegressionParameters();
 
-            return new LineReg(beta);
+            return new MultLineReg(beta);
         }
         // 決定係数取得
         public double getR2(double[] yi, double xij[][]) {
@@ -228,12 +211,12 @@ public class MultRegAna {
         public GLSMultRegAna(double data[][]) {
             this.data = data;
         }
-        public LineReg lineRegAna(double[] yi, double xij[][]) {
+        public MultLineReg lineRegAna(double[] yi, double xij[][]) {
             double[][] omega = calcCovatrianceMatrix();
             regression.newSampleData(yi, xij, omega);
 
             double[] beta = regression.estimateRegressionParameters();
-            return new LineReg(beta);
+            return new MultLineReg(beta);
         }
         // 決定係数取得
         public double getR2(double[] yi, double xij[][]) {

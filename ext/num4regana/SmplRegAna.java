@@ -5,7 +5,7 @@ public class SmplRegAna {
     public static SmplRegAna getInstance() {
         return regana;
     }
-    public LineReg lineRegAna(double[] yi, double xi[]) {
+    public SmplLineReg lineRegAna(double[] yi, double xi[]) {
         LineRegAna line = new LineRegAna();
 
         return line.lineRegAna(yi, xi);
@@ -26,29 +26,15 @@ public class SmplRegAna {
     /*********************************/
     /* class define                  */
     /*********************************/
-    public class LineReg {
-        private double a = 0.0;
-        private double b = 0.0;
-        public LineReg(double a, double b) {
-            this.a = a;
-            this.b = b;
-        }
-        public double getIntercept() {
-            return a;
-        }
-        public double getSlope() {
-            return b;
-        }
-    }
     private class LineRegAna {
         // 単回帰の分析
-        public LineReg lineRegAna(double[] yi, double xi[]) {
+        public SmplLineReg lineRegAna(double[] yi, double xi[]) {
             SimpleRegression simpleReg = new SimpleRegression(true);
 
             for(int i = 0; i < yi.length; i++) {
                 simpleReg.addData(xi[i], yi[i]);
             }
-            LineReg ret = new LineReg(simpleReg.getIntercept(), simpleReg.getSlope());
+            SmplLineReg ret = new SmplLineReg(simpleReg.getIntercept(), simpleReg.getSlope());
 
             return ret;
         }
