@@ -2,6 +2,7 @@ require_relative('num4lineregana')
 require_relative('num4glmregana')
 require_relative('num4glmmregana')
 require_relative('num4hbmregana')
+require_relative('num4effctual')
 
 # 回帰分析
 module Num4RegAnaLib
@@ -9,6 +10,7 @@ module Num4RegAnaLib
     include Num4GLMRegAnaLib
     include Num4GLMMRegAnaLib
     include Num4HBMRegAnaLib
+    include Num4EffectualLib
 end
 
 
