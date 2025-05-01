@@ -10,14 +10,14 @@ public class LogitBayesRegAna extends AbstractGLMM {
     public static LogitBayesRegAna getInstance() {
         return regana;
     }
-    public LineReg nonLineRegAna(double[] yi, double xij[][]) {
+    public MultLineReg nonLineRegAna(double[] yi, double xij[][]) {
         double[] b = initB(xij[0].length);
 
         for  (int i = 0; i < NUM; i++) {
             b = mcmcGS(yi, b, xij);
         }
-
-        return new BinLneReg(b);
+        BinLneReg binRet = new BinLneReg();
+        return binRet.setB(b);
     }
     public double getBIC(Map<String, Object> regCoe, double[][] xij) {
         double[] b = new double[1 + xij[0].length];
@@ -54,11 +54,10 @@ public class LogitBayesRegAna extends AbstractGLMM {
     /*********************************/
     /* class define                  */
     /*********************************/
-    public class BinLneReg extends LineReg {
-        private double[] pb = null;
-        public BinLneReg(double[] b) {
+    public class BinLneReg {
+        public MultLineReg setB(double[] b) {
             int i = 0;
-            pb = new double[b.length];
+            double[] pb = new double[b.length];
 
             for(double e : b) {
                 BinomialDistribution dist = new BinomialDistribution(1, e);
@@ -66,24 +65,7 @@ public class LogitBayesRegAna extends AbstractGLMM {
                 pb[i] = dist.getNumericalMean();
                 i++;
             }
-            super.setB(pb);
-        }
-    }
-    public class LineReg {
-        private double a   = 0.0;
-        private double[] b = null;
-        protected void setB(double[] b) {
-            this.a = b[0];
-            this.b = new double[b.length - 1];
-            for (int i = 0; i < this.b.length; i++) {
-                this.b[i] = b[i + 1];
-            }
-        }
-        public double getIntercept() {
-            return a;
-        }
-        public double[] getSlope() {
-            return b;
+            return new MultLineReg(pb);
         }
     }
 }

@@ -10,13 +10,14 @@ public class PoissonBayesRegAna extends AbstractGLMM {
     public static PoissonBayesRegAna getInstance() {
         return regana;
     }
-    public LineReg nonLineRegAna(double[] yi, double xij[][]) {
+    public MultLineReg nonLineRegAna(double[] yi, double xij[][]) {
         double[] b = initB(xij[0].length);
 
         for  (int i = 0; i < NUM; i++) {
             b = mcmcGS(yi, b, xij);
         }
-        return new PoissonLineReg(b);
+        PoissonLineReg poRet = new PoissonLineReg();
+        return poRet.setB(b);
     }
     public double getBIC(Map<String, Object> regCoe, double[][] xij) {
         double[] b = new double[1 + xij[0].length];
@@ -53,10 +54,9 @@ public class PoissonBayesRegAna extends AbstractGLMM {
     /*********************************/
     /* class define                  */
     /*********************************/
-    public class PoissonLineReg extends LineReg {
-        private double[] pb = null;        
-        public PoissonLineReg(double[] b) {
-            pb = new double[b.length];
+    public class PoissonLineReg {
+        public MultLineReg setB(double[] b) {
+            double[] pb = new double[b.length];
             int i = 0;
 
             for(double e : b) {
@@ -65,24 +65,7 @@ public class PoissonBayesRegAna extends AbstractGLMM {
                 pb[i] = dist.getNumericalMean();
                 i++;
             }
-            super.setB(pb);
-        }
-    }
-    public class LineReg {
-        private double a   = 0.0;
-        private double[] b = null;
-        protected void setB(double[] b) {
-            this.a = b[0];
-            this.b = new double[b.length - 1];
-            for (int i = 0; i < this.b.length; i++) {
-                this.b[i] = b[i + 1];
-            }
-        }
-        public double getIntercept() {
-            return a;
-        }
-        public double[] getSlope() {
-            return b;
+            return new MultLineReg(pb);
         }
     }
     
