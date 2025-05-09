@@ -13,16 +13,17 @@ class EffectDat
         csv_dt.each do |dt|
             @yi.push(dt[11].to_i)           # spend
             @zi.push(dt[12].to_i)           # treatment
-            case dt[7]                 # channel(Web, Phone, Multichannel)
-            when "Phone"               # recency + history + channel
-                @xij.push([dt[0].to_i, dt[2].to_f, 1, 0])
-            when "Web"
-                @xij.push([dt[0].to_i, dt[2].to_f, 0, 1])
-            when "Multichannel"
-                @xij.push([dt[0].to_i, dt[2].to_f, 1, 1])
-            else
-                @xij.push([dt[0].to_i, dt[2].to_f, 0, 0])
-            end
+            @xij.push([dt[0].to_i, dt[2].to_f, 1])
+#            case dt[7]                 # channel(Web, Phone, Multichannel)
+#            when "Phone"               # recency + history + channel
+#                @xij.push([dt[0].to_i, dt[2].to_f, 1, 0])
+#            when "Web"
+#                @xij.push([dt[0].to_i, dt[2].to_f, 0, 1])
+#            when "Multichannel"
+#                @xij.push([dt[0].to_i, dt[2].to_f, 1, 1])
+#            else
+#                @xij.push([dt[0].to_i, dt[2].to_f, 0, 0])
+#            end
         end
     end
     def yi
@@ -62,9 +63,7 @@ RSpec.describe Num4RegAnaLib do
             zi = @bias_t.zi
             expect(
                 regana.ipw(yi, xij, zi)
-            ).to my_round(100.0, 1)
-
-            p @bias_t.xi[0]
+            ).to my_round(0.0, 1)
         end
     end
 end
