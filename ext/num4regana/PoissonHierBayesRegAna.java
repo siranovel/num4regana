@@ -30,7 +30,7 @@ public class PoissonHierBayesRegAna extends AbstractGLMM {
         for(int i = 0; i < xi.length; i++) {
             ret += b[i] * xi[i];
         }
-        return ret + r;
+        return ret;
     }
     // p = exp(q)
     double linkFunc(double q) {
