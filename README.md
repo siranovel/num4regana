@@ -4,8 +4,6 @@ num4regana
 
 ## decscription ##
 
-詳細は、https://siranovel.github.io/mydocs/num4regana
-
 ## Demo ##
 
 ## VS. ##
@@ -24,12 +22,19 @@ From rubygems:
     [sudo] gem install num4regana
 ~~~
 
+Install via Gemfile:  
+~~~
+source "https://rubygems.pkg.github.com/siranovel" do
+    gem "num4regana"
+end
+~~~
+
 or from the git repository on github:  
 ~~~
     git clone https://github.com/siranovel/num4regana.git  
     cd num4regana  
-    gem build *.gemspec
-    gem install *.gem
+    gem build num4regana.gemspec
+    gem install num4regana.gem
 ~~~
 
 ## Contribution ##
