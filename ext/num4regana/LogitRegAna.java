@@ -1,9 +1,11 @@
 import java.util.Arrays;
 import java.util.Map;
+import org.apache.commons.math3.analysis.function.Sigmoid;
 
 public class LogitRegAna extends AbstractGLM {
     private final int NUM = 1000;
     private static LogitRegAna regana = new LogitRegAna();
+    private Sigmoid sigmoid = new Sigmoid();
     public static LogitRegAna getInstance() {
         return regana;
     }
@@ -37,9 +39,9 @@ public class LogitRegAna extends AbstractGLM {
         }
         return ret;
     }
-    // p = 1 / (1 + exp( -q))
+    // p = 1 / (1 + exp(-q))
     double linkFunc(double q) {
-        return 1.0 / (1.0 + Math.exp(-1.0 * q));
+        return sigmoid.value(q);
     }
     /*********************************/
     /* interface define              */
