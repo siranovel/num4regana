@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [0.1.2] - 2025-06-13
+### add
+- add Effect verification function.
+   psm                function
+
 ## [0.1.1] - 2025-06-02
 ### add
 - add required_ruby_version in gemspec file.
