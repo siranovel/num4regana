@@ -160,7 +160,7 @@ module Num4LineRegAnaLib
         def getadjr2(yi, xij)
             return @multana.getAdjR2(yi.to_java(Java::double), xij.to_java(Java::double[]))
         end
-        # VIF
+        # VIF(Variance Inflation Factor)
         #
         # @overload getvif(xij)
         #   @param [Array] xij xの値(double[][])
@@ -185,7 +185,7 @@ module Num4LineRegAnaLib
             multRet = @multana.getVIF(xij.to_java(Java::double[]))
             return multRet.to_a
         end
-        # AIC
+        # AIC(赤池の情報基準)
         #
         # @overload getaic(yi, xij)
         #   @param [Array] yi yの値(double[])

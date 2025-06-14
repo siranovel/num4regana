@@ -5,6 +5,7 @@ require 'commons-math3-3.6.1.jar'
 java_import 'Effectual'
 
 # 効果検証
+#  (Apache commoms math3使用)
 module Num4EffectualLib
     # 無作為化比較試験(RCT:Randomized Controlled Trial)
     class RCTLib
@@ -13,7 +14,7 @@ module Num4EffectualLib
         end
         # 単回帰による効果推定
         #
-        # @overload smple_line_reg_ana(yi, xi)
+        # @overload smple_line_reg_ana(yi, zi)
         #   @param [Array] yi 目的変数(double[])
         #   @param [Array] zi 介入変数(double[])
         #   @return [double] 効果量
@@ -29,12 +30,24 @@ module Num4EffectualLib
             return ret[:slope]
         end
         # 傾向スコアによる効果推定
-        #   逆確率重み付け推定(IPW)
+        #   傾向スコアマッチング(PSM:Propensity Score Matching)
+        #
+        # @overload psm(yi, xij, zi)
+        #   @param [Array] yi 目的変数(double[])
+        #   @param [Array] xij 共変量変数(double[][])
+        #   @param [Array] zi 介入変数(double[])
+        #   @return [double] 効果量
+        def psm(yi, xij, zi)
+            return @effect.psm(yi.to_java(Java::double), xij.to_java(Java::double[]), zi.to_java(Java::double))
+        end
+        # 傾向スコアによる効果推定
+        #   逆確率重み付け推定(IPW:Inverse Probability Weighting)
         #
         # @overload ipw(yi, xij, zi)
         #   @param [Array] yi 目的変数(double[])
         #   @param [Array] xij 共変量変数(double[][])
         #   @param [Array] zi 介入変数(double[])
+        #   @return [double] 効果量
         def ipw(yi, xij, zi)
             return @effect.ipw(yi.to_java(Java::double), xij.to_java(Java::double[]), zi.to_java(Java::double))
         end
