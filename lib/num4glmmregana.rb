@@ -66,7 +66,7 @@ module Num4GLMMRegAnaLib
             }
             return retRb
         end
-        # BIC
+        # BIC(ベイズ情報基準)
         #
         # @overload get_bic(regcoe, xij)
         #   @param [Hash] regcoe 回帰係数(intercept:定数項 slope:回帰係数)
@@ -149,7 +149,7 @@ module Num4GLMMRegAnaLib
             }
             return retRb
         end
-        # BIC
+        # BIC(ベイズ情報基準)
         #
         # @overload get_bic(regcoe, xij)
         #   @param [Hash] regcoe 回帰係数(intercept:定数項 slope:回帰係数)

@@ -29,12 +29,27 @@ public class Effectual {
         private int y1cnt = 0;
         private double y0[][] = null;
         private double y1[][] = null;
+        private final double caliper = 0.002;
         public double psm(double[] yi, double[][] xij, double[] zi) {
-            yidiv(yi, xij, zi);
+            double indices = 0.0;
+            int matCnt = 0;
 
-            return 0.0;
+            yiDiv(yi, xij, zi);
+            // マッチング
+            for(int i = 0; i < y1cnt; i++) {
+                for(int j = 0; j < y0cnt; j++) {
+                    double abs_diff = Math.abs(y0[j][1] - y1[i][1]);
+
+                    if (abs_diff < caliper) {
+                       indices += y1[i][0] - y0[j][0];
+                       matCnt++;
+                       break;
+                    }
+                }
+            }
+            return indices / matCnt;
         }
-        private void yidiv(double[] yi, double[][] xij, double[] zi) {
+        private void yiDiv(double[] yi, double[][] xij, double[] zi) {
             MultLineReg lineReg = logitReg.nonLineRegAna(zi, xij);
             int n = yi.length;
 
@@ -80,17 +95,16 @@ public class Effectual {
             for(int i = 0; i < n; i++) {
                 double ps = sigmoidFunc(lineReg, xij[i]);
 
-                if (ps == 0) { continue; }
+                if (ps == 0.0) { continue; }
                 if (ps == 1.0) { continue; }
                 sumWY1 += zi[i] * yi[i] / ps;
                 sumWZ1 += zi[i] / ps;
 
-                sumWY0 += ((1.0 - zi[i]) * yi[i]) / (1 - ps);
-                sumWZ0 += (1.0 - zi[i]) / (1 - ps);
+                sumWY0 += (1.0 - zi[i]) * yi[i] / (1.0 - ps);
+                sumWZ0 += (1.0 - zi[i]) / (1.0 - ps);
             }
             double meanWY1 = (sumWZ1 == 0.0) ? 0.0 : sumWY1 / sumWZ1;
             double meanWY0 = (sumWZ0 == 0.0) ? 0.0 : sumWY0 / sumWZ0;
-
             return meanWY1 - meanWY0;
         }
         private double sigmoidFunc(MultLineReg lineReg, double[] xi) {

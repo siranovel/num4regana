@@ -149,7 +149,7 @@ module Num4GLMRegAnaLib
             }
             return retRb
         end
-        # AIC
+        # AIC(赤池の情報基準)
         #
         # @overload get_aic(regcoe, xij)
         #   @param [Hash] regcoe 回帰係数(intercept:定数項 slope:回帰係数)
@@ -232,7 +232,7 @@ module Num4GLMRegAnaLib
             }
             return retRb
         end
-        # AIC
+        # AIC(赤池の情報基準)
         #
         # @overload get_aic(regcoe, xij)
         #   @param [Hash] regcoe 回帰係数(intercept:定数項 slope:回帰係数)
