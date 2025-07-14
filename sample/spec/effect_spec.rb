@@ -1,37 +1,10 @@
 require 'spec_helper'
 require 'num4regana'
-require 'csv'
-
-class EffectDat
-    def initialize
-        csv_dat = CSV.read('demo-ps.csv')
-        csv_dat.delete_at(0)
-        @yi = []
-        @xij = []
-        @zi = []
-        csv_dat.each do |dt|
-            @yi.push(dt[9].to_f) # day
-            @zi.push(dt[2].to_f) # sex
-            # age, BMI, Cr
-            @xij.push(
-                [dt[1].to_f, dt[3].to_f, dt[6].to_f]
-            )
-        end
-    end
-    def yi
-        return @yi
-    end
-    def xij
-        return @xij
-    end
-    def zi
-        return @zi
-    end
-end
+require 'effectdat'
 
 RSpec.describe Num4RegAnaLib do
     before(:all) do
-        @bias_t = EffectDat.new
+        @bias_t = EffectDatPS.new
     end
     describe Num4RegAnaLib::RCTLib do
         let!(:regana) { Num4RegAnaLib::RCTLib.new }
@@ -64,6 +37,14 @@ RSpec.describe Num4RegAnaLib do
             expect(
                 regana.ipw(yi, xij, zi)
             ).to my_round(5.6, 1)
+        end
+        it '#did' do
+            yi = [2261, 2458, 3904,2547]
+            ti = [0, 1, 0, 1]
+            zi = [0, 0, 1, 1]
+            expect(
+                regana.did(yi, ti, zi)
+            ).to my_round(-1554.0, 1)
         end
     end
 end
