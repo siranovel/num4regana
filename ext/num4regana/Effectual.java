@@ -15,6 +15,11 @@ public class Effectual {
 
         return ps_ipw.ipw(yi, xij, zi);
     }
+    public double did(double[] yi, double[] ti, double[] zi) {
+        DID effect_did = new DID();
+
+        return effect_did.did(yi, ti, zi);
+    }
     /*********************************/
     /* interface define              */
     /*********************************/
@@ -115,6 +120,27 @@ public class Effectual {
                 q += b[i] * xi[i];
             }
             return sigmoid.value(q);
+        }
+    }
+    // DID(Differene in Difference)
+    private class DID {
+        private MultRegAna regana = MultRegAna.getInstance();
+        public double did(double[] yi, double[] ti, double[] zi) {
+            MultLineReg multRet = regana.lineRegAna(yi, createXij(ti, zi));
+
+            double[] b = multRet.getSlope();
+            return b[2];
+        }
+        private double[][] createXij(double[] ti, double[] zi) {
+            int n = ti.length;
+            double[][]  xij = new double[ti.length][3];
+
+            for(int i = 0; i < n; i++) {
+                xij[i][0] = ti[i];
+                xij[i][1] = zi[i];
+                xij[i][2] = ti[i] * zi[i];
+            }
+            return xij;
         }
     }
 }
