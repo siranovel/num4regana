@@ -51,6 +51,16 @@ module Num4EffectualLib
         def ipw(yi, xij, zi)
             return @effect.ipw(yi.to_java(Java::double), xij.to_java(Java::double[]), zi.to_java(Java::double))
         end
+        # DID(Differene in Difference)
+        #
+        # @overload did(yi, ti, zi)
+        #   @param [Array] yi 目的変数(double[])
+        #   @param [Array] ti 時間(double[])
+        #   @param [Array] zi 介入変数(double[])
+        #   @return [double] 効果量
+        def did(yi, ti, zi)
+            return @effect.did(yi.to_java(Java::double), ti.to_java(Java::double),zi.to_java(Java::double)) 
+        end
     end
 end
 
