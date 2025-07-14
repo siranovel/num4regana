@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [0.1.3] - 2025-07-13
+### add
+- add Effect verification function.
+   did                function
+
 ## [0.1.2] - 2025-06-13
 ### add
 - add Effect verification function.

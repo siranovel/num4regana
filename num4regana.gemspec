@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name          = 'num4regana'
-  s.version       = '0.1.2'
-  s.date          = '2025-06-13'
+  s.version       = '0.1.3'
+  s.date          = '2025-07-13'
   s.summary       = "num for regression analysis"
   s.description   = "numerical solution for regression analysis."
   s.authors       = ["siranovel"]
