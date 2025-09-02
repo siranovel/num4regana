@@ -27,18 +27,25 @@ class EffectDatPS
         return @zi
     end
 end
-# 差分の差分法
-class EffectDatDID
+# 回帰不連続デザイン(Regreion Discontinuity Design:RDD)
+class EffectDatRDD
     def initialize
         @yi = []
-        @xij = []
+        @xi = []
         @zi = []
+        csv_dt = CSV.read('rdd_data.csv')
+        csv_dt.each do |dt|
+            treatment = ("Mens E-Mail" == dt[8]) ? 1 : 0
+            @yi.push(dt[9].to_f) # visit
+            @xi.push(dt[13].to_f) # history_log
+            @zi.push(treatment)
+        end
     end
     def yi
         return @yi
     end
-    def xij
-        return @xij
+    def xi
+        return @xi
     end
     def zi
         return @zi

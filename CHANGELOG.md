@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [0.1.4] - 2025-08-31
+### add
+- add Effect verification function.
+   rdd                function
+
 ## [0.1.3] - 2025-07-13
 ### add
 - add Effect verification function.
