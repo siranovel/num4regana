@@ -20,6 +20,11 @@ public class Effectual {
 
         return effect_did.did(yi, ti, zi);
     }
+    public double rdd(double[] yi, double[] xi, double[] zi) {
+        RDD effect_rdd = new RDD();
+
+        return effect_rdd.rdd(yi, xi, zi);
+    }
     /*********************************/
     /* interface define              */
     /*********************************/
@@ -139,6 +144,26 @@ public class Effectual {
                 xij[i][0] = ti[i];
                 xij[i][1] = zi[i];
                 xij[i][2] = ti[i] * zi[i];
+            }
+            return xij;
+        }
+    }
+    // 回帰不連続デザイン(Regreion Discontinuity Design:RDD)
+    private class RDD {
+        private MultRegAna regana = MultRegAna.getInstance();
+        public double rdd(double[] yi, double[] xi, double[] zi) {
+            MultLineReg multRet = regana.lineRegAna(yi, createXij(xi, zi));
+
+            double[] b = multRet.getSlope();
+            return b[1];
+        }        
+        private double[][] createXij(double[] xi, double[] zi) {
+            int n = xi.length;
+            double[][] xij = new double[xi.length][2];
+
+            for(int i = 0; i < n; i++) {
+                xij[i][0] = xi[i];
+                xij[i][1] = zi[i];
             }
             return xij;
         }
