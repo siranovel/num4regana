@@ -5,6 +5,7 @@ require 'effectdat'
 RSpec.describe Num4RegAnaLib do
     before(:all) do
         @bias_t = EffectDatPS.new
+        @rdd_dt = EffectDatRDD.new
     end
     describe Num4RegAnaLib::RCTLib do
         let!(:regana) { Num4RegAnaLib::RCTLib.new }
@@ -45,6 +46,14 @@ RSpec.describe Num4RegAnaLib do
             expect(
                 regana.did(yi, ti, zi)
             ).to my_round(-1554.0, 1)
+        end
+        it '#rdd' do
+            yi = @rdd_dt.yi
+            xi = @rdd_dt.xi
+            zi = @rdd_dt.zi
+            expect(
+                regana.rdd(yi, xi, zi)
+            ).to my_round(0.114, 3)
         end
     end
 end
