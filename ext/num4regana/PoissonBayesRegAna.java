@@ -5,7 +5,6 @@ import org.apache.commons.math3.distribution.PoissonDistribution;
 
 public class PoissonBayesRegAna extends AbstractGLMM {
     private final int NUM = 1000;
-    private final int TIM = 3;
     private static PoissonBayesRegAna regana = new PoissonBayesRegAna();
     public static PoissonBayesRegAna getInstance() {
         return regana;
@@ -16,8 +15,7 @@ public class PoissonBayesRegAna extends AbstractGLMM {
         for  (int i = 0; i < NUM; i++) {
             b = mcmcGS(yi, b, xij);
         }
-        PoissonLineReg poRet = new PoissonLineReg();
-        return poRet.setB(b);
+        return new PoissonLineReg(b);
     }
     public double getBIC(Map<String, Object> regCoe, double[][] xij) {
         double[] b = new double[1 + xij[0].length];
@@ -54,20 +52,23 @@ public class PoissonBayesRegAna extends AbstractGLMM {
     /*********************************/
     /* class define                  */
     /*********************************/
-    public class PoissonLineReg {
-        public MultLineReg setB(double[] b) {
-            double[] pb = new double[b.length];
+    public class PoissonLineReg extends MultLineReg {
+        private static double[] calcMeanB(double[] b) {
             int i = 0;
+            double[] pb = new double[b.length];
 
             for(double e : b) {
-                PoissonDistribution dist = new PoissonDistribution(b[i]);
+                PoissonDistribution dist = new PoissonDistribution(e);
 
                 pb[i] = dist.getNumericalMean();
                 i++;
             }
-            return new MultLineReg(pb);
+            return pb;
+        
+        }
+        public PoissonLineReg(double[] b) {
+            super(calcMeanB(b));
         }
     }
-    
 }
 

@@ -231,12 +231,10 @@ public class MultRegAna {
             double[][] omega = new double[data.length][data.length];
 
             for(int i = 0; i < data.length; i++) {
-                for(int j = 0; j < data.length; j++) {
-                    double[] xArray = data[i];
-                    double[] yArray = data[j];
+                double[] xArray = data[i];
+                double[] yArray = data[i];
 
-                    omega[i][j] = corel.covariance(xArray, yArray);
-                }
+                omega[i][i] = corel.covariance(xArray, yArray);
             }
             return omega;
         }

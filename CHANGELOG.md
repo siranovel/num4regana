@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [0.1.5] - 2025-11-27
+### chg
+- chg bug fix
+    function of equal variances in OLSMultRegAnaLib
+- chg java11 -> java23
+
 ## [0.1.4] - 2025-08-31
 ### add
 - add Effect verification function.

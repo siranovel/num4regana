@@ -23,7 +23,7 @@ public class PoissonHierBayesRegAna extends AbstractGLMM {
         return b;
     }
     // q = b0 + b1 * x0 + r
-    // ランダム切片モデル
+    // ランダム切片モデル1
     double regression(double[] b, double[] xi, double r) {
         double ret = 0.0;
 
