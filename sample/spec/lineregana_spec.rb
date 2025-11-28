@@ -71,8 +71,8 @@ RSpec.describe Num4RegAnaLib do
         end
         it '#line_reg_ana 2' do
             res = {
-                "intercept":  -18.34,    # 定数項
-                "slope":      [-0.56, 0.29, 2.09, 12.70],     # 回帰係数
+                "intercept":  126.97,    # 定数項
+                "slope":      [156.74, 0.07, -11.29, -94.00],     # 回帰係数
             }
             expect(
                 regana.line_reg_ana(@olsyi2, @olsxij2)
