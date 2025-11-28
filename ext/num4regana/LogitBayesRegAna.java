@@ -2,7 +2,6 @@ import java.util.Map;
 import java.util.Arrays;
 import org.apache.commons.math3.distribution.BetaDistribution;
 import org.apache.commons.math3.distribution.BinomialDistribution;
-import java.util.function.Function;
 
 public class LogitBayesRegAna extends AbstractGLMM {
     private final int NUM = 1000;
@@ -16,8 +15,7 @@ public class LogitBayesRegAna extends AbstractGLMM {
         for  (int i = 0; i < NUM; i++) {
             b = mcmcGS(yi, b, xij);
         }
-        BinLneReg binRet = new BinLneReg();
-        return binRet.setB(b);
+        return new BinLineReg(b);
     }
     public double getBIC(Map<String, Object> regCoe, double[][] xij) {
         double[] b = new double[1 + xij[0].length];
@@ -54,8 +52,8 @@ public class LogitBayesRegAna extends AbstractGLMM {
     /*********************************/
     /* class define                  */
     /*********************************/
-    public class BinLneReg {
-        public MultLineReg setB(double[] b) {
+    public class BinLineReg extends MultLineReg {
+        private static double[] calcMeanB(double[] b) {
             int i = 0;
             double[] pb = new double[b.length];
 
@@ -65,7 +63,10 @@ public class LogitBayesRegAna extends AbstractGLMM {
                 pb[i] = dist.getNumericalMean();
                 i++;
             }
-            return new MultLineReg(pb);
+            return pb;
+        }
+        public BinLineReg(double[] b) {
+            super(calcMeanB(b));
         }
     }
 }
