@@ -30,7 +30,7 @@ module MyLineRegMatcher
       "#{@expected} expected but got #{@actual}"
     end
   end
-  def linereg(expected, n)
+  def is_linereg(expected, n)
     Matcher.new(expected, n)
   end
 end

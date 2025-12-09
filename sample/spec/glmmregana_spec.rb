@@ -41,7 +41,7 @@ RSpec.describe Num4RegAnaLib do
             regana.non_line_reg_ana(yi, xij)
 #            expect(
 #                regana.non_line_reg_ana(yi, xij)
-#            ).to linereg(res, 4)
+#            ).to is_linereg(res, 4)
 # {:intercept=>0.5742886218005325, :slope=>[0.5517212822536828, 0.5748054561700319]}
 # {:intercept=>0.44426881466394974, :slope=>[0.5202123495676625, 0.5477244196524941]}
 # {:intercept=>0.4217903552231481, :slope=>[0.44186307024347676, 0.4862701919881903]}
@@ -111,7 +111,7 @@ RSpec.describe Num4RegAnaLib do
             regana.non_line_reg_ana(yi, xij)
 #            expect(
 #                regana.non_line_reg_ana(yi, xij)
-#            ).to linereg(res, 4)
+#            ).to is_linereg(res, 4)
 # {:intercept=>0.4341885635221602, :slope=>[0.5703137378188881]}
 # {:intercept=>0.5233791563571913, :slope=>[0.4629854978645746]}
 # {:intercept=>0.5367747588576945, :slope=>[0.5375546954530761]}
