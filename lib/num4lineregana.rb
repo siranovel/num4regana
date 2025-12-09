@@ -4,6 +4,7 @@ require 'commons-math3-3.6.1.jar'
 
 java_import 'SmplRegAna'
 java_import 'MultRegAna'
+java_import 'PLSMultRegAna'
 # 線形回帰分析
 #  (Apache commoms math3使用)
 module Num4LineRegAnaLib
@@ -210,6 +211,47 @@ module Num4LineRegAnaLib
         #   => 58.113
         def getaic(yi, xij)
             return @multana.getAIC(yi.to_java(Java::double), xij.to_java(Java::double[]))
+        end
+    end
+    # PLS回帰分析
+    class PLSMultRegAnaLib
+        def initialize
+            @multana = PLSMultRegAna.getInstance()
+        end
+        # PLS回帰分析
+        #
+        # @overload line_reg_ana(yi, xij)
+        #   @param [Array] yi yの値(double[])
+        #   @param [Array] xij xの値(double[][])
+        #   @return [Hash] (intercept:定数項 slope:回帰係数)
+        # @example
+        #   olsyi = [45, 38, 41, 34, 59, 47, 35, 43, 54, 52]
+        #   olsxij = [
+        #       [17.5, 30],
+        #       [17.0, 25],
+        #       [18.5, 20],
+        #       [16.0, 30],
+        #       [19.0, 45],
+        #       [19.5, 35],
+        #       [16.0, 25],
+        #       [18.0, 35],
+        #       [19.0, 35],
+        #       [19.5, 40],
+        #   ]
+        #   regana = Num4RegAnaLib::PLSMultRegAnaLib.new
+        #   regana.line_reg_ana(olsyi, olsxij)
+        #   => 
+        #     {
+        #        "intercept":  44.80,           # 定数項
+        #        "slope":      [-0.89, 3.40],   # 回帰係数
+        #     }
+        def line_reg_ana(yi, xij)
+            multRet = @multana.lineRegAna(yi.to_java(Java::double), xij.to_java(Java::double[]))
+            retRb = {
+                "intercept":  multRet.getIntercept(),      # 定数項
+                "slope":      multRet.getSlope().to_a,     # 回帰係数
+            }
+            return retRb
         end
     end
 end
