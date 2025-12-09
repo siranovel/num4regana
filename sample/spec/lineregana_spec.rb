@@ -3,6 +3,7 @@ require 'num4regana'
 
 
 RSpec.describe Num4RegAnaLib do
+    # 単回帰分析
     describe Num4RegAnaLib::SmplRegAnaLib do
         before do
             @yi = [286, 851, 589, 389, 158, 1037, 463, 563, 372, 1020]
@@ -16,7 +17,7 @@ RSpec.describe Num4RegAnaLib do
             }
             expect(
                 regana.line_reg_ana(@yi, @xi)
-            ).to linereg(res, 3)
+            ).to is_linereg(res, 3)
         end
         it '#getr2' do
             expect(
@@ -29,6 +30,7 @@ RSpec.describe Num4RegAnaLib do
             ).to my_round(0.945, 3)
         end
     end    
+    # 重回帰分析
     describe Num4RegAnaLib::OLSMultRegAnaLib do
         before do
             # 
@@ -67,7 +69,7 @@ RSpec.describe Num4RegAnaLib do
             }
             expect(
                 regana.line_reg_ana(@olsyi, @olsxij)
-            ).to linereg(res, 2)
+            ).to is_linereg(res, 2)
         end
         it '#line_reg_ana 2' do
             res = {
@@ -76,7 +78,7 @@ RSpec.describe Num4RegAnaLib do
             }
             expect(
                 regana.line_reg_ana(@olsyi2, @olsxij2)
-            ).to linereg(res, 2)
+            ).to is_linereg(res, 2)
         end
         it '#getr2' do
             expect(
@@ -98,6 +100,35 @@ RSpec.describe Num4RegAnaLib do
             expect(
                 regana.getaic(@olsyi, @olsxij)
             ).to my_round(58.113, 3)
+        end
+    end
+    # PLS回帰分析
+    describe Num4RegAnaLib::PLSMultRegAnaLib do
+        before do
+            # 
+            @olsyi = [45, 38, 41, 34, 59, 47, 35, 43, 54, 52]
+            @olsxij = [
+                [17.5, 30],
+                [17.0, 25],
+                [18.5, 20],
+                [16.0, 30],
+                [19.0, 45],
+                [19.5, 35],
+                [16.0, 25],
+                [18.0, 35],
+                [19.0, 35],
+                [19.5, 40],
+            ]
+        end
+        let!(:regana) { Num4RegAnaLib::PLSMultRegAnaLib.new }
+        it '#line_reg_ana' do
+            res = {
+                "intercept":  44.80,    # 定数項
+                "slope":      [-0.89, 3.40],     # 回帰係数
+            }
+            expect(
+                regana.line_reg_ana(@olsyi, @olsxij)
+            ).to is_linereg(res, 2)
         end
     end
 end

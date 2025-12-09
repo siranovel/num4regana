@@ -18,7 +18,7 @@ RSpec.describe Num4RegAnaLib do
             }
             expect(
                 regana.non_line_reg_ana(yi, xij)
-            ).to linereg(res, 4)
+            ).to is_linereg(res, 4)
         end
     end
 end
