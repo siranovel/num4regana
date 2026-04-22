@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [0.1.7] - 2026-04-21
+### add
+- add validity function in LogitRegAnaLib
+- add validity function in ProBitRegAnaLib
+
 ## [0.1.6] - 2025-12-06
 ### add
 - add function of PLSMultRegAnaLib
