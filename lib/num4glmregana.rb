@@ -114,6 +114,75 @@ module Num4GLMRegAnaLib
             o["slope"]     = regcoe[:slope].to_java(Java::double)
             @multana.getAIC(o, xij.to_java(Java::double[]))
         end
+        # 正答率と誤判別率
+        #
+        # @overload validity(yi, regcoe, xij, threshold)
+        #   @param [Array] yi yの値(double[])
+        #   @param [Hash] regcoe 回帰係数(intercept:定数項 slope:回帰係数)
+        #   @param [Array] xij xの値(double[][])
+        #   @param [double] threshold 閾値
+        #   @return [Hash] 分類問題の精度指標
+        # @example
+        #     yi = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        #     reg = {
+        #          :intercept=>  -6.2313,    # 定数項
+        #          :slope=>      [2.5995, 0.1652],     # 回帰係数
+        #     }
+        #     xij = [
+        #        [1, 24],
+        #        [1, 18],
+        #        [0, 15],
+        #        [1, 16],
+        #        [0, 10],
+        #        [1, 26],
+        #        [1, 2],
+        #        [0, 24],
+        #        [1, 18],
+        #        [1, 22],
+        #        [1, 3],
+        #        [1, 6],
+        #        [0, 15],
+        #        [0, 12],
+        #        [1, 6],
+        #        [0, 6],
+        #        [1, 12],
+        #        [0, 12],
+        #        [1, 18],
+        #        [1, 3],
+        #        [1, 8],
+        #        [0, 9],
+        #        [0, 12],
+        #        [0, 6],
+        #        [0, 8],
+        #        [1, 12],
+        #     ]
+        #     regana = Num4RegAnaLib::LogitRegAnaLib.new
+        #     regana.validity(yi, reg, xij, 0.5)
+        #     =>
+        #       {
+        #         "accuracy": 0.6363636363636364,   # 精度・正確度
+        #         "precision": 1.0,                 # 適合度
+        #         "recall": 0.2727272727272727,     # 再現率
+        #         "sensitivity": 0.2727272727272727,# 感度
+        #         "specificity": 1.0,               # 特異度
+        #         "ppv": 1.0,                       # 陽性適敵中率
+        #         "npv": 0.5789473684210527,        # 陽性適中率
+        #         "tpr": 0.2727272727272727,        # 真陽性率
+        #         "fpr": 0.0,                       # 偽陽性率
+        #         "tnr": 1.0,                       # 真陰性率
+        #         "fnr": 0.7272727272727273         # 偽陰性率
+        #       }
+        def validity(yi, regcoe, xij, threshold)
+            o = HashMap.new
+            o["intercept"] = regcoe[:intercept]
+            o["slope"]     = regcoe[:slope].to_java(Java::double)
+            retJava = @multana.validity(yi.to_java(Java::double), o, xij.to_java(Java::double[]), threshold)
+            retRb = {}
+            retJava.each do |k, v|
+                retRb[k.to_sym] = v
+            end
+            return retRb
+        end
     end
     # ポアソン回帰分析
     class PoissonRegAnaLib
@@ -279,6 +348,75 @@ module Num4GLMRegAnaLib
             o["intercept"] = regcoe[:intercept]
             o["slope"]     = regcoe[:slope].to_java(Java::double)
             @multana.getAIC(o, xij.to_java(Java::double[]))
+        end
+        # 正答率と誤判別率
+        #
+        # @overload validity(yi, regcoe, xij, threshold)
+        #   @param [Array] yi yの値(double[])
+        #   @param [Hash] regcoe 回帰係数(intercept:定数項 slope:回帰係数)
+        #   @param [Array] xij xの値(double[][])
+        #   @param [double] threshold 閾値
+        #   @return [Hash] 分類問題の精度指標
+        # @example
+        #     yi = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        #     reg = {
+        #         :intercept=>  -5.0497,    # 定数項
+        #         :slope=>      [2.2379, 0.2973],     # 回帰係数
+        #     }
+        #     xij = [
+        #        [1, 24],
+        #        [1, 18],
+        #        [0, 15],
+        #        [1, 16],
+        #        [0, 10],
+        #        [1, 26],
+        #        [1, 2],
+        #        [0, 24],
+        #        [1, 18],
+        #        [1, 22],
+        #        [1, 3],
+        #        [1, 6],
+        #        [0, 15],
+        #        [0, 12],
+        #        [1, 6],
+        #        [0, 6],
+        #        [1, 12],
+        #        [0, 12],
+        #        [1, 18],
+        #        [1, 3],
+        #        [1, 8],
+        #        [0, 9],
+        #        [0, 12],
+        #        [0, 6],
+        #        [0, 8],
+        #        [1, 12],
+        #     ]
+        #     regana = Num4RegAnaLib::ProBitRegAnaLib.new
+        #     regana.validity(yi, reg, xij, 0.5)
+        #     =>
+        #       {
+        #         "accuracy": 0.7181818181818183,   # 精度・正確度
+        #         "precision": 0.7608695652173912,  # 適合度
+        #         "recall": 0.6363636363636364,     # 再現率
+        #         "sensitivity": 0.6363636363636364,# 感度
+        #         "specificity": 0.8,               # 特異度
+        #         "ppv": 0.7608695652173912,        # 陽性適敵中率
+        #         "npv": 0.6875000000000001,        # 陽性適中率
+        #         "tpr": 0.6363636363636364,        # 真陽性率
+        #         "fpr": 0.2,                       # 偽陽性率
+        #         "tnr": 0.8,                       # 真陰性率
+        #         "fnr": 0.36363636363636365        # 偽陰性率
+        #       }
+        def validity(yi, regcoe, xij, threshold)
+            o = HashMap.new
+            o["intercept"] = regcoe[:intercept]
+            o["slope"]     = regcoe[:slope].to_java(Java::double)
+            retJava = @multana.validity(yi.to_java(Java::double), o, xij.to_java(Java::double[]), threshold)
+            retRb = {}
+            retJava.each do |k, v|
+                retRb[k.to_sym] = v
+            end
+            return retRb
         end
     end
 end
