@@ -3,7 +3,7 @@ require 'csv'
 # 傾向スコア
 class EffectDatPS
     def initialize
-        csv_dat = CSV.read('demo-ps.csv')
+        csv_dat = CSV.read('ps/demo-ps.csv')
         csv_dat.delete_at(0)
         @yi = []
         @xij = []
@@ -33,7 +33,7 @@ class EffectDatRDD
         @yi = []
         @xi = []
         @zi = []
-        csv_dt = CSV.read('rdd_data.csv')
+        csv_dt = CSV.read('rdd/rdd_data.csv')
         csv_dt.each do |dt|
             treatment = ("Mens E-Mail" == dt[8]) ? 1 : 0
             @yi.push(dt[9].to_f) # visit
