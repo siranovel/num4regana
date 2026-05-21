@@ -4,7 +4,8 @@ require 'effectdat'
 
 RSpec.describe Num4RegAnaLib do
     before(:all) do
-        @bias_t = EffectDatPS.new
+        @bias_dt = EffectDatPS.new
+        @did_dt = EffectDatDID.new
         @rdd_dt = EffectDatRDD.new
     end
     describe Num4RegAnaLib::RCTLib do
@@ -24,28 +25,28 @@ RSpec.describe Num4RegAnaLib do
             ).to my_round(100.0, 1)
         end
         it '#psm' do
-            yi = @bias_t.yi
-            xij = @bias_t.xij
-            zi = @bias_t.zi
+            yi = @bias_dt.yi
+            xij = @bias_dt.xij
+            zi = @bias_dt.zi
             expect(
                 regana.psm(yi, xij, zi)
             ).to my_round(2.8, 1)
         end
         it '#ipw' do
-            yi = @bias_t.yi
-            xij = @bias_t.xij
-            zi = @bias_t.zi
+            yi = @bias_dt.yi
+            xij = @bias_dt.xij
+            zi = @bias_dt.zi
             expect(
                 regana.ipw(yi, xij, zi)
             ).to my_round(5.6, 1)
         end
         it '#did' do
-            yi = [2261, 2458, 3904,2547]
-            ti = [0, 1, 0, 1]
-            zi = [0, 0, 1, 1]
+            yi = @did_dt.yi
+            ti = @did_dt.ti
+            zi = @did_dt.zi
             expect(
                 regana.did(yi, ti, zi)
-            ).to my_round(-1554.0, 1)
+            ).to my_round(-1454.0, 1)
         end
         it '#rdd' do
             yi = @rdd_dt.yi
