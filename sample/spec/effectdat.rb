@@ -40,7 +40,7 @@ class EffectDatDID
     def initialize
         # データフレームを作成
         ## 地域・年別のデータセッの作成
-        js_df = crtDataFrame(@@lsv1849, @@lsv1854)
+        js_df = crtDataFrame()
         ## 会社別のデータセットを作成
         js_sum = calcSum(js_df)
 
@@ -60,7 +60,7 @@ class EffectDatDID
         return @@zi
     end
 
-    def crtDataFrame(v1849,v1854)
+    def crtDataFrame()
         sv = crtv("sv_", @@sv1849, @@sv1854, "0")
         lsv = crtv("lsv_", @@lsv1849, @@lsv1854, "1")
         df = sv + lsv
